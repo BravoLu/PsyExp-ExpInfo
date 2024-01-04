@@ -1,0 +1,16 @@
+CREATE TABLE `exp_infos` (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(512) NOT NULL DEFAULT 'default title',
+  detail VARCHAR(4096) NOT NULL DEFAULT 'default detail',
+  rid BIGINT COMMENT 'creator id',
+  ctime INT NOT NULL DEFAULT 0,
+  pnum INT NOT NULL DEFAULT 0,
+  cur_type INT,
+  price BIGINT,
+  state INT,
+  end_time DATETIME DEFAULT NULL,
+  url VARCHAR(32),
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  deleted_at DATETIME DEFAULT NULL
+);
