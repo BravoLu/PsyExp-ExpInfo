@@ -78,10 +78,12 @@ func (s *ExpInfoDaoImpl) QueryExps(
 	if err != nil {
 		return nil, 0, nil, err
 	}
-	tx = tx.Table(ExpTableName).Debug().Where("state != 0")
+	tx = tx.Table(ExpTableName).Debug().Where("state != 0 and state != 5")
 
 	if cond.Rid != 0 {
 		tx = tx.Where("rid = ?", cond.Rid)
+	} else {
+		tx = tx.Where("state != 1")
 	}
 
 	// get the stats
@@ -93,21 +95,21 @@ func (s *ExpInfoDaoImpl) QueryExps(
 	}
 
 	if err := tx.WithContext(ctx).
-		Where("state = 1").
+		Where("state = 2").
 		Count(&onGoingNum).Error; err != nil {
 		log.Errorf("FindExperiments get count error: %+v", err)
 		return nil, 0, nil, err
 	}
 
 	if err := tx.WithContext(ctx).
-		Where("state = 2").
+		Where("state = 3").
 		Count(&finishedNum).Error; err != nil {
 		log.Errorf("FindExperiments get count error: %+v", err)
 		return nil, 0, nil, err
 	}
 
 	if err := tx.WithContext(ctx).
-		Where("state = 3").
+		Where("state = 4").
 		Count(&closedNum).Error; err != nil {
 		log.Errorf("FindExperiments get count error: %+v", err)
 		return nil, 0, nil, err
