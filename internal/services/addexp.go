@@ -2,9 +2,9 @@ package services
 
 import (
 	"context"
-	"time"
 	"encoding/json"
 	"gorm.io/datatypes"
+	"time"
 
 	pb "github.com/BravoLu/grpc_idl"
 	"github.com/grpc_exp_info/internal/entity"
@@ -26,34 +26,37 @@ func (s *ExpInfoServerImpl) AddExp(
 	if err != nil {
 		panic(err)
 	}
-	layout := "2006-01-02 15:04:05"
-	et, err := time.Parse(layout, req.Deadline)
-	if err != nil {
-		log.Errorf("parse time error: %+v", err)
-		return nil, err
+	var et time.Time
+	if len(req.Deadline) != 0 {
+		et, err = time.Parse("2006-01-02 15:04:05", req.Deadline)
+		if err != nil {
+			log.Errorf("parse time error: %+v", err)
+			return nil, err
+		}
 	}
+
 	e := &entity.ExpInfo{
-		Title: req.Title,
-		Desc: req.Desc,
-		Rid: req.Rid,
-		Ctime: req.Ctime,
-		Pnum: req.Pnum,
+		Title:   req.Title,
+		Desc:    req.Desc,
+		Rid:     req.Rid,
+		Ctime:   req.Ctime,
+		Pnum:    req.Pnum,
 		EndTime: et,
 		CurType: req.CurType,
-		Price: req.Price,
-		Url: req.Url,
-		State: 1,
-		Tags: datatypes.JSON(jsonTags),
+		Price:   req.Price,
+		Url:     req.Url,
+		State:   1,
+		Tags:    datatypes.JSON(jsonTags),
 	}
 	dao := &mysql.ExpInfoDaoImpl{}
 	id, err := dao.AddExp(ctx, e)
-	if err != nil { 
+	if err != nil {
 		return nil, err
 	}
 	rsp := &pb.AddExpRsp{
 		Code: 0,
 		Msg:  "ok",
-		Eid: id,
+		Eid:  id,
 	}
 	return rsp, nil
 }
